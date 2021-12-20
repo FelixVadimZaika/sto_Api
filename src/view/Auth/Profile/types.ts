@@ -3,12 +3,8 @@ export enum ProfileActionTypes {
 }
 
 export interface IProfileModel {
-    id: number;
     name: string;
     email: string;
-    emailVerifiedAt: string;
-    createdAt: string;
-    updatedAt: string;
 }
 
 export interface ProfileState {

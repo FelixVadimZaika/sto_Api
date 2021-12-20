@@ -8,6 +8,7 @@ import UserProfile from './view/Auth/Profile'
 
 import ProductsList from './view/Product/List';
 import AddProduct from "./view/Product/AddProduct";
+import EditProduct from "./view/Product/EditProduct";
 
 import AuthLayuot from './components/Layout/AuthLayout'
 import Login from './view/Auth/Login';
@@ -27,6 +28,7 @@ function App() {
 
           <Route path="products/list" element={<ProductsList />} />
           <Route path="products/add-product" element={<AddProduct />} />
+          <Route path="products/edit-product" element={<EditProduct />} />
         </Route>
 
         <Route path="/" element={<AuthLayuot />} >

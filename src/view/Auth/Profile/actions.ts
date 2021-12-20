@@ -7,14 +7,15 @@ import {
     ProfileActionTypes
 } from "./types";
 
-export const fetchUser = () => {
+export const GethUser = () => {
     return async (dispatch: Dispatch<ProfileActions>) => {
         try {
             let response = await http.get<IProfileModel>("api/auth/user-profile");
-
+            const data = response.data;
+            
             dispatch({
                 type: ProfileActionTypes.GET_PROFILE,
-                payload: response.data,
+                payload: { name: data.name, email: data.email },
             });
 
             return Promise.resolve(response);
@@ -24,11 +25,3 @@ export const fetchUser = () => {
         }
     };
 };
-
-// export AuthUser = (token: string, dispatch: Dispatch<LoginAction>) => {
-//     const user = jwt.decode(token) as IUser;
-//     dispatch({
-//         type: AuthActionTypes.LOGIN_AUTH_SUCCESS,
-//         payload: { name: user.name, email: user.email }
-//     })
-// }

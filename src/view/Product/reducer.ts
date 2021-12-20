@@ -1,16 +1,45 @@
-import { ProductActions, ProductsActionTypes, ProductsState } from './types';
+import {
+    ProductActions,
+    ProductsActionTypes,
+    ProductsState,
+} from './types';
 
 const initialState: ProductsState = {
-    products: []
+    currentProduct: {
+        id: 0,
+        name: "",
+        detail: ""
+    },
+    products: [],
+    last_page: 0,
 }
 
-export const ProductsReducer = (state = initialState, action: ProductActions) => {
+export const productsReducer = (state = initialState, action: ProductActions) => {
     switch (action.type) {
-
-        case ProductsActionTypes.FETCH_PRODUCTS:
+        case ProductsActionTypes.GET_PRODUCT:
             return {
                 ...state,
-                products: action.payload
+                currentProduct: {
+                    id: action.payload.data.id,
+                    name: action.payload.data.name,
+                    detail: action.payload.data.detail,
+                }
+            };
+        case ProductsActionTypes.GET_PRODUCTS:
+            return {
+                ...state,
+                products: action.payload.data,
+                last_page: action.payload.last_page
+            };
+        case ProductsActionTypes.ADD_PRODUCT:
+            return {
+                ...state,
+                ...action.payload
+            };
+        case ProductsActionTypes.EDIT_PRODUCT:
+            return {
+                ...state,
+                ...action.payload
             };
         default:
             return state;

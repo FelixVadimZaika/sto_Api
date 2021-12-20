@@ -3,11 +3,13 @@ import { Provider } from 'react-redux'
 import { BrowserRouter } from 'react-router-dom';
 
 import App from './App';
-import { store } from "./store"
 import reportWebVitals from './reportWebVitals';
+import { store } from "./store"
 import { AuthUser } from './view/Auth/Login/actions';
 
+import "cropperjs/dist/cropper.css";
 import 'bootstrap/dist/css/bootstrap.css';
+import "bootstrap/dist/js/bootstrap";
 import './index.css';
 
 const token = localStorage.token as string;

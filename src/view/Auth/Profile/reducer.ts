@@ -6,12 +6,8 @@ import {
 
 const initialState: ProfileState = {
     profile: {
-        id: 0,
         name: "",
         email:  "",
-        emailVerifiedAt:  "",
-        createdAt:  "",
-        updatedAt:  "",
     }    
 }
 

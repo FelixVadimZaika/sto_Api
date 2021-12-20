@@ -1,20 +1,91 @@
 import { Dispatch } from "react";
-import http from "../../http_common";
-import { ProductActions, IProductsModel, ProductsActionTypes } from "./types";
 
-export const fetchProducts = () => {
+import http from "../../http_common";
+
+import {
+    IGetProductModel,
+    IProductModel,
+    IProductsModel,
+    IAddProductModel,
+    IProductSearch,
+    ProductActions,
+    ProductsActionTypes,
+} from "./types";
+
+export const GetProduct = (idProduct: string | null) => {
     return async (dispatch: Dispatch<ProductActions>) => {
         try {
-            let response = await http.get<IProductsModel>("api/products");
+            let response = await http.get<IGetProductModel>(`api/products/${idProduct}`);
             const { data } = response.data;
+            
             dispatch({
-                type: ProductsActionTypes.FETCH_PRODUCTS,
-                payload: data,
+                type: ProductsActionTypes.GET_PRODUCT,
+                payload: {data: data},
             });
-            return Promise.resolve(data);
+
+            return Promise.resolve();
+        }
+        catch (ex) {
+            console.log("Problem get");
+            return Promise.reject(ex)
+        }
+    }
+}
+
+export const GetProducts = (search: IProductSearch) => {
+    return async (dispatch: Dispatch<ProductActions>) => {
+        try {
+            let response = await http.get<IProductsModel>("api/products", { params: search });
+            const { data, last_page } = response.data;
+
+            dispatch({
+                type: ProductsActionTypes.GET_PRODUCTS,
+                payload: {
+                    data: data,
+                    last_page: last_page
+                },
+            });
+
+            return Promise.resolve();
         } catch (ex) {
-            console.log("Problem fetch");
+            console.log("Problem get");
             return Promise.reject();
         }
     };
 };
+
+export const AddProduct = (data: IAddProductModel) => {
+    return async () => {
+        try {
+            await http.post<IAddProductModel>("api/products", data);
+            return Promise.resolve();
+        } catch (ex) {
+            console.log("Problem add product");
+            return Promise.reject();
+        }
+    }
+}
+
+export const EditProduct = (data: IProductModel) => {
+    return async () => {
+        try {
+            await http.put<IProductModel>(`api/products/${data.id}`, data);
+            return Promise.resolve();
+        } catch (ex) {
+            console.log("Problem edit product");
+            return Promise.reject();
+        }
+    }
+}
+
+export const DeleteProduct = (id: number) => {
+    return async () => {
+        try {
+            await http.delete(`api/products/${id}`);
+            return Promise.resolve();
+        } catch (ex) {
+            console.log("Problem delete product");
+            return Promise.reject();
+        }
+    }
+}
