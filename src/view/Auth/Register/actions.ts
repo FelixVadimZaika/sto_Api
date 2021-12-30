@@ -9,10 +9,18 @@ import {
     RegisterServerError
 } from "./types";
 
-export const RegisterUser = (data: IRegisterModel) => {
+export const RegisterUser = (data: IRegisterModel, file: File) => {
     return async (dispatch: Dispatch<RegisterAction>) => {
         try {
-            const response = await http.post<IRegisterModel>("api/auth/register", data);
+            var formData = new FormData();
+
+            formData.append("name", data.name);
+            formData.append("email", data.email);
+            formData.append("password", data.password);
+            formData.append("password_confirmation", data.passwordConfirm);
+            formData.append("file", file);
+
+            const response = await http.post<IRegisterModel>("api/auth/register", formData);
 
             dispatch({
                 type: RegisterActionTypes.REGISTER,

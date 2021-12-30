@@ -14,21 +14,65 @@ import InputGroup from "../../../components/InputGroup";
 
 const Register: React.FC = () => {
     const modalRef = useRef(null);
-    let cropper: Cropper;
+    const [imageCropper, setImageCropper] = useState<Cropper>();
+    const [imageSelected, setImageSelected] = useState<string>("https://cdn.picpng.com/icon/upload-files-icon-66764.png")
 
-    const selectImage = () => {
+    const selectImage = (path: string) => {
+        if (!imageCropper) {
+            const image = document.getElementById("image");
+            const cropper = new Cropper(image as HTMLImageElement, {
+                aspectRatio: 1 / 1,
+                viewMode: 1,
+                dragMode: 'move',
+            });
+            cropper.replace(path);
+            setImageCropper(cropper);
+        } else {
+            imageCropper.replace(path);
+        }
+
         const modalEle = modalRef.current;
         const bsModal = new Modal(modalEle as unknown as Element, {
             backdrop: "static",
             keyboard: false,
         });
         bsModal.show();
+    }
 
-        const image = document.getElementById("image");
-        cropper = new Cropper(image as any, {
-            aspectRatio: 16 / 9,
-            crop() {},
-        });
+    const rotateImg = () => {
+        imageCropper?.rotate(90);
+    };
+
+    const saveImage = async function () {
+        const image = imageCropper?.getCroppedCanvas().toDataURL() as string;
+        await setImageSelected(image);
+    }
+
+    const handleChangeImage = async function (e: React.ChangeEvent<HTMLInputElement>) {
+        const fileList = e.target.files;
+        if (!fileList || fileList.length == 0) return;
+
+        await selectImage(URL.createObjectURL(fileList[0]));
+    }
+
+    const b64toBlob = (b64Data: string, contentType = '', sliceSize = 512) => {
+        const byteCharacters = atob(b64Data);
+        const byteArrays = [];
+
+        for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+            const slice = byteCharacters.slice(offset, offset + sliceSize);
+
+            const byteNumbers = new Array(slice.length);
+            for (let i = 0; i < slice.length; i++) {
+                byteNumbers[i] = slice.charCodeAt(i);
+            }
+
+            const byteArray = new Uint8Array(byteNumbers);
+            byteArrays.push(byteArray);
+        }
+
+        const blob = new Blob(byteArrays, { type: contentType });
+        return blob;
     }
 
     const { RegisterUser } = useActions();
@@ -47,7 +91,11 @@ const Register: React.FC = () => {
         try {
             setIsSubmit(true);
 
-            await RegisterUser(values);
+            if (imageCropper) {
+                const blob = b64toBlob(imageSelected, 'image/png');
+                var file = new File([blob], "image");
+                await RegisterUser(values, file);
+            }
 
             setIsSubmit(false);
             navigator("/login");
@@ -85,9 +133,14 @@ const Register: React.FC = () => {
         <>
             <h1>Register</h1>
             <FormikProvider value={formik} >
-                <Form onSubmit={handleSubmit}>
-                    <button className="btn btn-primary" onClick={selectImage}>Select photo</button>
+                <Form autoComplete="off" noValidate onSubmit={handleSubmit} >
                     {invalid && <div className="alert alert-danger">{invalid}</div>}
+                    <div className="form-group text-center mb-3">
+                        <label className="form-label" htmlFor="image">
+                            <img src={imageSelected} className="rounded-circle" width="200px" />
+                        </label>
+                        <input className="form-control" type="file" name="Image" id="Image" onChange={handleChangeImage} />
+                    </div>
                     <InputGroup
                         label="Name"
                         field="name"
@@ -134,16 +187,13 @@ const Register: React.FC = () => {
                         </div>
                         <div className="modal-body">
                             <div>
-                                <img id="image" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" />
+                                <img id="image" src={imageSelected} />
                             </div>
                         </div>
                         <div className="modal-footer">
+                            <button type="button" className="btn btn-primary" onClick={rotateImg}>Rotate</button>
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" className="btn btn-primary" onClick={() => {
-                                cropper.rotate(90);
-                            }}>
-                                rotate
-                            </button>
+                            <button type="button" className="btn btn-primary" data-bs-dismiss="modal" onClick={saveImage}>Save</button>
                         </div>
                     </div>
                 </div>

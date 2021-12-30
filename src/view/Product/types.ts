@@ -10,6 +10,7 @@ export interface IProductModel {
     id: number;
     name: string;
     detail: string;
+    image: string;
 }
 
 export interface IAddProductModel {
@@ -56,7 +57,7 @@ export interface GetProductsAction {
 
 export interface AddProductAction {
     type: ProductsActionTypes.ADD_PRODUCT,
-    payload: ProductsState
+    payload: IAddProductModel
 }
 
 export interface EditProductAction {

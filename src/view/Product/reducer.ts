@@ -8,7 +8,8 @@ const initialState: ProductsState = {
     currentProduct: {
         id: 0,
         name: "",
-        detail: ""
+        detail: "",
+        image: ""
     },
     products: [],
     last_page: 0,
@@ -23,6 +24,7 @@ export const productsReducer = (state = initialState, action: ProductActions) =>
                     id: action.payload.data.id,
                     name: action.payload.data.name,
                     detail: action.payload.data.detail,
+                    image: action.payload.data.image,
                 }
             };
         case ProductsActionTypes.GET_PRODUCTS:

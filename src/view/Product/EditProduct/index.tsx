@@ -23,7 +23,8 @@ const EditProduct: React.FC = () => {
     const initialValues: IProductModel = {
         id: currentProduct.id,
         name: currentProduct.name,
-        detail: currentProduct.detail
+        detail: currentProduct.detail,
+        image: currentProduct.image
     }
 
     useEffect(() => {

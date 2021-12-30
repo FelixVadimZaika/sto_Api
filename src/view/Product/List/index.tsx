@@ -97,7 +97,11 @@ const ProductsList: React.FC = () => {
                                         return (
                                             <tr key={item.id}>
                                                 <th className="align-middle" scope="row">{item.id}</th>
-                                                <td className="align-middle">{item.name}</td>
+                                                <td className="align-middle">
+                                                    <img src={`public\\images\\` + item.image}/>
+                                                    {item.name}
+                                                    </td>
+                                                <td className="align-middle"></td>
                                                 <td className="align-middle">{item.detail}</td>
                                                 <td className="align-middle">
                                                     <ul className="nav">

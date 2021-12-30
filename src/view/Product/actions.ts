@@ -54,10 +54,16 @@ export const GetProducts = (search: IProductSearch) => {
     };
 };
 
-export const AddProduct = (data: IAddProductModel) => {
+export const AddProduct = (data: IAddProductModel, file: File) => {
     return async () => {
         try {
-            await http.post<IAddProductModel>("api/products", data);
+            var formData = new FormData();
+            formData.append("name", data.name);
+            formData.append("detail", data.detail);
+            formData.append("file", file);
+
+            await http.post("api/products", formData);
+
             return Promise.resolve();
         } catch (ex) {
             console.log("Problem add product");
